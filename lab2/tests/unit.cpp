@@ -102,7 +102,6 @@ TEST_F(MoneyTest, TestConstructors) {
     // Конструктор по умолчанию
     Money empty;
     ASSERT_EQ(empty.GetLength(), 0);
-    ASSERT_EQ(empty.GetMoney(), nullptr);
 
     // Конструктор от строки
     Money fromString("123");
@@ -135,19 +134,6 @@ TEST_F(MoneyTest, TestAssignmentOperators) {
     // Self-assignment
     money1 = money1;
     ASSERT_EQ(money1, Money("12"));
-}
-
-TEST_F(MoneyTest, TestGetMethods) {
-    ASSERT_EQ(money1.GetLength(), 2);
-    ASSERT_EQ(money4.GetLength(), 3);
-    ASSERT_EQ(money5.GetLength(), 1);
-
-    const unsigned char* data1 = money1.GetMoney();
-    ASSERT_EQ(data1[0], '1');
-    ASSERT_EQ(data1[1], '2');
-
-    const unsigned char* data5 = money5.GetMoney();
-    ASSERT_EQ(data5[0], '0');
 }
 
 TEST_F(MoneyTest, TestEdgeCases) {

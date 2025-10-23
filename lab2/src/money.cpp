@@ -109,9 +109,6 @@ bool Money::operator<=(const Money& other) const {
     return !(*this > other);
 }
 
-const unsigned char* Money::GetMoney() const {
-    return data;
-}
 
 size_t Money::GetLength() const {
     return size;
@@ -129,14 +126,11 @@ Money::~Money() noexcept {
 Money operator+(const Money& lhs, const Money& rhs) {
     std::string result;
 
-    const unsigned char* lhs_data = lhs.GetMoney();
-    const unsigned char* rhs_data = rhs.GetMoney();
+    const unsigned char* lhs_data = lhs.data;
+    const unsigned char* rhs_data = rhs.data;
 
-    size_t lhs_sz = lhs.GetLength();
-    size_t rhs_sz = rhs.GetLength();
-
-    int32_t i = lhs_sz - 1;
-    int32_t j = rhs_sz - 1;
+    int32_t i = lhs.size - 1;
+    int32_t j = rhs.size - 1;
 
     int32_t rem = 0;
     while (i >= 0 || j >= 0 || rem) {
@@ -154,14 +148,11 @@ Money operator+(const Money& lhs, const Money& rhs) {
 Money operator-(const Money& lhs, const Money& rhs) {
     std::string result;
 
-    const unsigned char* lhs_data = lhs.GetMoney();
-    const unsigned char* rhs_data = rhs.GetMoney();
+    const unsigned char* lhs_data = lhs.data;
+    const unsigned char* rhs_data = rhs.data;
 
-    size_t lhs_sz = lhs.GetLength();
-    size_t rhs_sz = rhs.GetLength();
-
-    int32_t i = lhs_sz - 1;
-    int32_t j = rhs_sz - 1;
+    int32_t i = lhs.size - 1;
+    int32_t j = rhs.size - 1;
 
     int32_t rem = 0;
     while (i >= 0 || j >= 0) {
@@ -188,9 +179,8 @@ Money operator-(const Money& lhs, const Money& rhs) {
 
 
 std::ostream& operator<<(std::ostream& os, const Money& m) {
-    size_t sz = m.GetLength();
-    const unsigned char* data = m.GetMoney();
-    for (size_t i = 0; i < sz; ++i) {
+    const unsigned char* data = m.data;
+    for (size_t i = 0; i < m.size; ++i) {
         os << data[i];
     }
     return os;

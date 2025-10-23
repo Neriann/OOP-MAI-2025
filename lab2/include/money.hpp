@@ -4,6 +4,12 @@
 
 
 class Money {
+    friend Money operator+(const Money& lhs, const Money& rhs);
+
+    friend Money operator-(const Money& lhs, const Money& rhs);
+
+    friend std::ostream& operator<<(std::ostream& os, const Money& m);
+
 public:
     Money();
 
@@ -27,7 +33,6 @@ public:
     bool operator<(const Money& other) const;
     bool operator<=(const Money& other) const;
 
-    const unsigned char* GetMoney() const;
     size_t GetLength() const;
 
     virtual ~Money() noexcept;
@@ -38,11 +43,5 @@ private:
 
     void swap(Money& other) noexcept;
 };
-
-Money operator+(const Money& lhs, const Money& rhs);
-
-Money operator-(const Money& lhs, const Money& rhs);
-
-std::ostream& operator<<(std::ostream& os, const Money& money);
 
 int32_t stoi(const unsigned char* data, size_t size);
