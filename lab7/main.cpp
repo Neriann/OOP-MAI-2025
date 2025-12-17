@@ -4,6 +4,7 @@
 #include "druid.h"
 #include "orc.h"
 #include "slaver.h"
+#include "factory.h"
 
 
 #include <cstring>
@@ -13,88 +14,13 @@
 #include <optional>
 
 using namespace std::chrono_literals;
-std::mutex print_mutex;
+extern std::mutex print_mutex;
 
 constexpr int MAX_X_FIELD_SIZE = 100;
 constexpr int MAX_Y_FIELD_SIZE = 100;
 constexpr int QUANTITY_OF_ENTITIES = 50;
 constexpr auto PROGRAM_TIME = 30s;
 
-
-// Text Observer
-class TextObserver : public IFightObserver {
-    TextObserver() = default;
-
-public:
-    static std::shared_ptr<IFightObserver> get() {
-        static TextObserver instance;
-        // Constructor with custom deleter
-        return {&instance, [](IFightObserver*) {
-        }};
-    }
-
-    void on_fight(const NPC& attacker, const NPC& defender, bool win) override {
-        if (win) {
-            std::lock_guard lock(print_mutex);
-            static int count = 0;
-
-            std::cout << std::endl
-                << '[' << ++count << ']' << " Murder --------" << std::endl;
-            attacker.print();
-            defender.print();
-            std::cout << std::endl;
-        }
-    }
-};
-
-// Фабрики
-std::shared_ptr<NPC> factory(std::istream& is) {
-    std::shared_ptr<NPC> result;
-    int type{0};
-    if (is >> type) {
-        switch (type) {
-        case DruidType:
-            result = std::make_shared<Druid>(is);
-            break;
-        case OrcType:
-            result = std::make_shared<Orc>(is);
-            break;
-        case SlaverType:
-            result = std::make_shared<Slaver>(is);
-            break;
-
-        default: ;
-        }
-    }
-    else
-        std::cerr << "Unexpected NPC type:" << type << std::endl;
-
-    if (result)
-        result->subscribe(TextObserver::get());
-
-    return result;
-}
-
-std::shared_ptr<NPC> factory(NpcType type, int x, int y) {
-    std::cout << "Type:" << type << std::endl;
-    std::shared_ptr<NPC> result;
-    switch (type) {
-    case DruidType:
-        result = std::make_shared<Druid>(x, y);
-        break;
-    case OrcType:
-        result = std::make_shared<Orc>(x, y);
-        break;
-    case SlaverType:
-        result = std::make_shared<Slaver>(x, y);
-        break;
-    default: ;
-    }
-    if (result)
-        result->subscribe(TextObserver::get());
-
-    return result;
-}
 
 // save array to file
 void save(const set_t& array, const std::string& filename) {
@@ -124,7 +50,7 @@ set_t load(const std::string& filename) {
 // print to screen
 void print_entities(const set_t& array, auto func) {
     for (auto& npc : array)
-        if (npc->is_alive() && func(npc)) npc->print();
+        if (npc->is_alive() && func(npc)) npc->print(std::cout);
 }
 
 // Singleton

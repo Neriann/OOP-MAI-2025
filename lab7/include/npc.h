@@ -7,6 +7,8 @@
 #include <vector>
 #include <set>
 
+#include "observer.h"
+
 // type for npcs
 class NPC;
 class Druid;
@@ -33,13 +35,6 @@ constexpr int NPC_DISTANCES[] = {
     [DruidType] = 10
 };
 
-struct IFightObserver
-{
-    virtual ~IFightObserver() = default;
-
-    virtual void on_fight(const NPC& attacker, const NPC& defender, bool win) = 0;
-};
-
 class NPC
 {
 public:
@@ -57,11 +52,13 @@ public:
     virtual bool fight_with(const Druid& other) const = 0;
     virtual bool fight_with(const Orc& other) const = 0;
     virtual bool fight_with(const Slaver& other) const = 0;
-    virtual void print() const = 0;
+    virtual void print(std::ostream& os) const = 0;
 
     virtual void save(std::ostream& os);
 
     int get_id() const;
+    int get_x() const;
+    int get_y() const;
 
     std::pair<int, int> get_position() const;
     int get_step() const;

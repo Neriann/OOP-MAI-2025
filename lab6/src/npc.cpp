@@ -11,7 +11,12 @@ NPC::NPC(NpcType t, int _x, int _y) :
 
 NPC::NPC(NpcType t, std::istream& is) :
     type(t), id(next_load_id++) {
-    is >> x >> y;
+
+    if (!is.eof()) is >> x;
+    else throw std::invalid_argument("NPC::NPC: bad input");
+
+    if (!is.eof()) is >> y;
+    else throw std::invalid_argument("NPC::NPC: bad input");
 }
 
 void NPC::subscribe(const std::shared_ptr<IFightObserver>& observer) {
@@ -31,6 +36,18 @@ bool NPC::is_close(const NPC& other, size_t distance) const {
 
 int NPC::get_id() const {
     return id;
+}
+
+int NPC::get_x() const {
+    return x;
+}
+
+int NPC::get_y() const {
+    return y;
+}
+
+NpcType NPC::get_type() const {
+    return type;
 }
 
 void NPC::save(std::ostream& os) {

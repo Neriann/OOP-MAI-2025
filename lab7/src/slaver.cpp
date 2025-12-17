@@ -10,8 +10,8 @@ Slaver::Slaver(std::istream& is) :
     NPC(SlaverType, is) {
 }
 
-void Slaver::print() const {
-    std::cout << *this;
+void Slaver::print(std::ostream& os) const {
+    os << *this;
 }
 
 void Slaver::save(std::ostream& os) {

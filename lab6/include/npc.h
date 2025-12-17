@@ -7,6 +7,8 @@
 #include <vector>
 #include <set>
 
+#include "observer.h"
+
 // type for npcs
 class NPC;
 class Druid;
@@ -22,12 +24,6 @@ enum NpcType
     DruidType = 3
 };
 
-struct IFightObserver
-{
-    virtual ~IFightObserver() = default;
-
-    virtual void on_fight(const NPC& attacker, const NPC& defender, bool win) = 0;
-};
 
 class NPC
 {
@@ -46,9 +42,14 @@ public:
     virtual bool fight_with(const Druid& other) const = 0;
     virtual bool fight_with(const Orc& other) const = 0;
     virtual bool fight_with(const Slaver& other) const = 0;
-    virtual void print() const = 0;
+    virtual void print(std::ostream& os) const = 0;
 
     int get_id() const;
+
+    int get_x() const;
+    int get_y() const;
+
+    NpcType get_type() const;
 
     virtual void save(std::ostream& os);
 

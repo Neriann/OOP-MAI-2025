@@ -10,8 +10,8 @@ Druid::Druid(std::istream& is) :
     NPC(DruidType, is) {
 }
 
-void Druid::print() const {
-    std::cout << *this;
+void Druid::print(std::ostream& os) const {
+    os << *this;
 }
 
 bool Druid::fight(const NPC& other) const {

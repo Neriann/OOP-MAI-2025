@@ -8,7 +8,7 @@ public:
     Druid(int x, int y);
     explicit Druid(std::istream& is);
 
-    void print() const override;
+    void print(std::ostream& os) const override;
 
     bool fight(const NPC& other) const override;
 

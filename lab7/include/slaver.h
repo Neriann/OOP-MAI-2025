@@ -7,7 +7,7 @@ public:
     Slaver(int x, int y);
     explicit Slaver(std::istream& is);
 
-    void print() const override;
+    void print(std::ostream& os) const override;
     void save(std::ostream& os) override;
 
     bool fight(const NPC& other) const override;

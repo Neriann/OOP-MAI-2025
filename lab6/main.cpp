@@ -1,90 +1,21 @@
 #include <chrono>
+#include <cstring>
+#include <random>
 
 #include "npc.h"
+
 #include "druid.h"
 #include "orc.h"
 #include "slaver.h"
 
+#include "factory.h"
+#include "observer.h"
 
-#include <cstring>
-#include <random>
 
 constexpr int FIELD_SIZE = 500;
 constexpr int MAX_DISTANCE = 500;
 constexpr int QUANTITY_OF_ENTITIES = 100;
 
-
-// Text Observer
-class TextObserver : public IFightObserver {
-    TextObserver() = default;
-
-public:
-    static std::shared_ptr<IFightObserver> get() {
-        static TextObserver instance;
-        // Constructor with custom deleter
-        return {&instance, [](IFightObserver*) {
-        }};
-    }
-
-    void on_fight(const NPC& attacker, const NPC& defender, bool win) override {
-        if (win) {
-            static int count = 0;
-            std::cout << std::endl
-                << '[' << ++count << ']' << " Murder --------" << std::endl;
-            attacker.print();
-            defender.print();
-        }
-    }
-};
-
-// Фабрики -----------------------------------
-std::shared_ptr<NPC> factory(std::istream& is) {
-    std::shared_ptr<NPC> result;
-    int type{0};
-    if (is >> type) {
-        switch (type) {
-        case SlaverType:
-            result = std::make_shared<Slaver>(is);
-            break;
-        case OrcType:
-            result = std::make_shared<Orc>(is);
-            break;
-        case DruidType:
-            result = std::make_shared<Druid>(is);
-            break;
-
-        default: ;
-        }
-    }
-    else
-        std::cerr << "Unexpected NPC type:" << type << std::endl;
-
-    if (result)
-        result->subscribe(TextObserver::get());
-
-    return result;
-}
-
-std::shared_ptr<NPC> factory(NpcType type, int x, int y) {
-    std::cout << "Type:" << type << std::endl;
-    std::shared_ptr<NPC> result;
-    switch (type) {
-    case SlaverType:
-        result = std::make_shared<Slaver>(x, y);
-        break;
-    case OrcType:
-        result = std::make_shared<Orc>(x, y);
-        break;
-    case DruidType:
-        result = std::make_shared<Druid>(x, y);
-        break;
-    default: ;
-    }
-    if (result)
-        result->subscribe(TextObserver::get());
-
-    return result;
-}
 
 // save array to file
 void save(const set_t& array, const std::string& filename) {
@@ -114,7 +45,7 @@ set_t load(const std::string& filename) {
 // print to screen
 std::ostream& operator<<(std::ostream& os, const set_t& array) {
     for (auto& n : array)
-        n->print();
+        n->print(os);
     return os;
 }
 

@@ -10,8 +10,8 @@ Orc::Orc(std::istream& is) :
     NPC(OrcType, is) {
 }
 
-void Orc::print() const {
-    std::cout << *this;
+void Orc::print(std::ostream& os) const {
+    os << *this;
 }
 
 void Orc::save(std::ostream& os) {
